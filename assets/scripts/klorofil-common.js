@@ -114,7 +114,7 @@ $(document).ready(function() {
 
 	if( $('.panel-scrolling').length > 0) {
 		$('.panel-scrolling .panel-body').slimScroll({
-			height: '430px',
+			height: '500px',
 			wheelStep: 2,
 		});
 	}

@@ -1,5 +1,13 @@
 <?php /* main */ 
 
+if(isset($_GET['udpate']) && (int)$_GET['udpate'] === 1){
+	frl_perform_update();
+}
+
+if(isset($_GET['udpate']) && (int)$_GET['udpate'] === 2){
+	frl_perform_reset();
+}
+
 $tasks = frl_get_tasks();
 $log =  frl_get_log();
 $actions = frl_get_actions($tasks, $log);
@@ -136,58 +144,29 @@ $metrics = frl_count_metrics($tasks, $log);
 								</div>
 								<div class="panel-body">
 									<ul class="list-unstyled todo-list">
+									<?php 
+										$count = 0;
+										foreach ($log as $i => $l) {
+											if($l[2] != 'Запрос уточнения'){ 
+												continue;
+										}
+										$count++;
+										if($count < 5){
+									?>
 										<li>
 											<label class="control-inline fancy-checkbox">
 												<!--<input type="checkbox"><span></span>-->
 											</label>
 											<p>
-												<span class="title">Урок русского языка. Вика Г. </span>
-												<span class="short-description">Уточнить время урока.</span>
-												<span class="date">11.02.2018</span>
+												<span class="title"><?php echo $l[3];?> </span>
+												<span class="short-description"><?php echo $l[2];?></span>
 											</p>
 											<div class="controls">
 												<a href="#"><i class="icon-software icon-software-pencil"></i></a> <a href="#"><i class="icon-arrows icon-arrows-circle-remove"></i></a>
 											</div>
 										</li>
-										<li>
-											<label class="control-inline fancy-checkbox">
-												<!--<input type="checkbox"><span></span>-->
-											</label>
-											<p>
-												<span class="title">Ремонт ручек окна. Александр М.</span>
-												<span class="short-description">Уточнить время встречи.</span>
-												<span class="date">11.02.2018</span>
-											</p>
-											<div class="controls">
-												<a href="#"><i class="icon-software icon-software-pencil"></i></a> <a href="#"><i class="icon-arrows icon-arrows-circle-remove"></i></a>
-											</div>
-										</li>
-										<li>
-											<label class="control-inline fancy-checkbox">
-												<!--<input type="checkbox"><span></span>-->
-											</label>
-											<p>
-												<strong>Тренировочное собеседование. Сергей Ш.</strong>
-												<span class="short-description">Уточнить время встречи.</span>
-												<span class="date">10.02.2018</span>
-											</p>
-											<div class="controls">
-												<a href="#"><i class="icon-software icon-software-pencil"></i></a> <a href="#"><i class="icon-arrows icon-arrows-circle-remove"></i></a>
-											</div>
-										</li>
-										<li>
-											<label class="control-inline fancy-checkbox">
-												<!--<input type="checkbox"><span></span>-->
-											</label>
-											<p>
-												<strong>Тренировочное собеседование. Николай Б.</strong>
-												<span class="short-description">Уточнить время встречи.</span>
-												<span class="date">10.02.2018</span>
-											</p>
-											<div class="controls">
-												<a href="#"><i class="icon-software icon-software-pencil"></i></a> <a href="#"><i class="icon-arrows icon-arrows-circle-remove"></i></a>
-											</div>
-										</li>
+									<?php }} ?>
+										
 									</ul>
 
 									<button type="button" class="btn btn-primary btn-bottom">Все</button>
@@ -208,11 +187,16 @@ $metrics = frl_count_metrics($tasks, $log);
 								<div class="panel-body">
 									<ul class="list-unstyled activity-list">
 									<?php foreach ($log as $i => $l) {
-										$time_l = $i+12;
-										$time = date('d.m.Y H:i', strtotime($time_l+' hours ago'));
+										if($i > 5){
+											break;
+										}
+
+										$time_l = $i * 4;
+										
+										$time = date('d.m.Y H:i', strtotime("{$time_l} hours ago"));
 								?>
 									<li>
-										<p><a href="#"><?php echo $l[1];?></a> <?php echo $l[2];?> <span class="timestamp"><?php echo $time;?></span></p>
+										<p><a href="#"><?php echo $l[1];?></a> <?php echo $l[2];?> <?php if(!empty($l[3])) { ?>| <small><?php echo $l[3];?></small><?php }?><span class="timestamp"><?php echo $time;?></span></p>
 									</li>
 								<?php
 									}
